@@ -88,5 +88,11 @@ namespace DataBase_Work
                 MessageBox.Show(" Tekrar Hoşgeldiniz :)  ", "Welcome", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            update nm = new update();
+            nm.Show();
+        }
     }
 }

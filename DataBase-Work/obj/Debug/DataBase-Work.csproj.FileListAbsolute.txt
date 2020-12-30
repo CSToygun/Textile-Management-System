@@ -37,3 +37,4 @@ C:\Users\Toygun\source\repos\DataBase-Work\obj\Debug\DataBase_Work.newEleman.res
 C:\Users\Toygun\source\repos\DataBase-Work\obj\Debug\DataBase_Work.eskiKayitlar.resources
 C:\Users\Toygun\source\repos\DataBase-Work\obj\Debug\DataBase_Work.deletedata.resources
 C:\Users\Toygun\source\repos\DataBase-Work\obj\Debug\DataBase_Work.login.resources
+C:\Users\Toygun\source\repos\DataBase-Work\obj\Debug\DataBase_Work.update.resources

@@ -87,6 +87,7 @@ namespace DataBase_Work
             NpgsqlCommand cmd = new NpgsqlCommand();
             string data = comboBox1.Text;
             string data2 = textBox1.Text;
+            string sql;
             con.Open();
             cmd.Connection = con;
 
@@ -94,7 +95,7 @@ namespace DataBase_Work
             {
                 if (data == "Urun")
                 {
-                    cmd.CommandType = CommandType.Text;
+                    /*cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "DELETE  FROM urun where urunname = '" + data2 + "'";
                     NpgsqlDataReader dr = cmd.ExecuteReader();
                     if (dr.HasRows)
@@ -103,11 +104,37 @@ namespace DataBase_Work
                         dt.Load(dr);
                         dataGridView1.DataSource = dt;
                     }
-                    MessageBox.Show("Veriniz Silindi ! Lütfen Yenileyiniz ...");
+                    MessageBox.Show("Veriniz Silindi ! Lütfen Yenileyiniz ...");*/
+                    try
+                    {
+                        sql = @"SELECT*from urun_sil(:urunname)";
+                        cmd = new NpgsqlCommand(sql, con);
+
+                        cmd.Parameters.AddWithValue("urunname", textBox1.Text);
+
+                        int result = (int)cmd.ExecuteScalar();
+
+                        con.Close();
+
+                        if (result == 1)
+                        {
+                            MessageBox.Show("Veriniz Silindi ! Lütfen Yenileyiniz ...");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Hata!");
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        MessageBox.Show("Error: " + ex.Message);
+                    }
                 }
                 else if (data == "Malzeme")
                 {
-                    cmd.CommandType = CommandType.Text;
+                    /*cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "DELETE  FROM malzeme where malzemename = '" + data2 + "'";
                     NpgsqlDataReader dr = cmd.ExecuteReader();
                     if (dr.HasRows)
@@ -116,7 +143,35 @@ namespace DataBase_Work
                         dt.Load(dr);
                         dataGridView1.DataSource = dt;
                     }
-                    MessageBox.Show("Veriniz Silindi ! Lütfen Yenileyiniz ...");
+                    MessageBox.Show("Veriniz Silindi ! Lütfen Yenileyiniz ...");*/
+
+                    try
+                    {
+                        sql = @"SELECT*from malzeme_sil(:malzemename)";
+                        cmd = new NpgsqlCommand(sql, con);
+
+                        cmd.Parameters.AddWithValue("malzemename", textBox1.Text);
+
+                        int result = (int)cmd.ExecuteScalar();
+
+                        con.Close();
+
+                        if (result == 1)
+                        {
+                            MessageBox.Show("Veriniz Silindi ! Lütfen Yenileyiniz ...");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Hata!");
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        MessageBox.Show("Error: " + ex.Message);
+                    }
+
                 }
                 else if (data == "Eleman")
                 {
@@ -183,12 +238,15 @@ namespace DataBase_Work
             {
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = "SELECT * FROM eleman";
+                dataGridView1.Rows.Clear();
+                dataGridView1.Refresh();
                 NpgsqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {
                     DataTable dt = new DataTable();
                     dt.Load(dr);
                     dataGridView1.DataSource = dt;
+                    
                 }
             }
             else

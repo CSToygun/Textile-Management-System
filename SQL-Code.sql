@@ -26,7 +26,7 @@ CREATE TABLE public.Tarih
 	tarih_id SERIAL NOT NULL ,
     tarihdate character varying(255) NOT NULL,
     malzemetarihi character varying(255) NOT NULL,
-    uruntarihi character varying(40) COLLATE  NOT NULL,
+    uruntarihi character varying(40)  NOT NULL,
 	CONSTRAINT tarih_pkey PRIMARY KEY (tarih_id)
 )
 
@@ -34,9 +34,9 @@ CREATE TABLE public.Tarih
 CREATE TABLE public.Program
 (
 	data_id SERIAL NOT NULL ,
-    kisi_id character varying(255) NOT NULL,
-    urun_id character varying(255) NOT NULL,
-    malzeme_id character varying(40) COLLATE  NOT NULL,
+    kisi_id SERIAL NOT NULL,
+    urun_id SERIAL NOT NULL,
+    malzeme_id SERIAL NOT NULL,
 	CONSTRAINT program_pkey PRIMARY KEY (data_id),
 	CONSTRAINT program_fkey FOREIGN KEY (kisi_id ) REFERENCES "Elemansc"."Eleman"("kisi_id") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT program2_fkey FOREIGN KEY (urun_id) REFERENCES "Urun"("urun_id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -145,30 +145,30 @@ CREATE TABLE "Elemansc"."Yonetici"
     CONSTRAINT Yonetici_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Yonetici_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT Yonetici_f2key FOREIGN KEY (adminkey) REFERENCES "Admin"("admin_key")ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE "Elemansc"."Kesim"	
 (
     kisi_id INT NOT NULL ,
     calismasa CHARACTER VARYING(40) NOT NULL,
     CONSTRAINT Kesim_pkey PRIMARY KEY (kisi_id),
-	CONSTRAINT Kesim_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE,
-)
+	CONSTRAINT Kesim_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE "Elemansc"."Makine"	
 (
     kisi_id INT NOT NULL ,
     calismakine CHARACTER VARYING(40) NOT NULL,
     CONSTRAINT  Makine_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Makine_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
-	
-)
+);
 CREATE TABLE "Elemansc"."Teknisyen"	
 (
     kisi_id INT NOT NULL ,
     gorevi CHARACTER VARYING(80) NOT NULL,
     CONSTRAINT Teknisyen_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Teknisyen_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE "Elemansc"."Utu"	
 (
@@ -176,7 +176,7 @@ CREATE TABLE "Elemansc"."Utu"
     calisacagiutu CHARACTER VARYING(80) NOT NULL,
     CONSTRAINT Utu_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Utu_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE "Elemansc"."Dikis"	
 (
@@ -184,7 +184,7 @@ CREATE TABLE "Elemansc"."Dikis"
     makineno CHARACTER VARYING(80) NOT NULL,
     CONSTRAINT Dikis_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Dikis_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE "Elemansc"."Ayakci"	
 (
@@ -192,7 +192,7 @@ CREATE TABLE "Elemansc"."Ayakci"
     yardımetbirim CHARACTER VARYING(80) NOT NULL,
     CONSTRAINT Ayakci_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Ayakci_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE "Elemansc"."Temizlik"	
 (
@@ -200,7 +200,15 @@ CREATE TABLE "Elemansc"."Temizlik"
     caliskat CHARACTER VARYING(80) NOT NULL,
     CONSTRAINT Yonetici_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Teknisyen_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
+
+CREATE TABLE "Araba"	
+(
+    araba_id SERIAL NOT NULL ,
+    araba_model CHARACTER VARYING(40) NOT NULL,
+	araba_tur CHARACTER VARYING(20) NOT NULL,
+    CONSTRAINT araba_pkey PRIMARY KEY (araba_id)
+);
 
 CREATE TABLE "Elemansc"."Sofor"	
 (
@@ -208,35 +216,99 @@ CREATE TABLE "Elemansc"."Sofor"
     araba_id SERIAL NOT NULL,
 	plaka_no CHARACTER VARYING(20) NOT NULL,
     CONSTRAINT Sofor_pkey PRIMARY KEY (kisi_id),
-	CONSTRAINT Sofor_unqkey UNIQUE KEY (plaka_no),
-	CONSTRAINT Sofor_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT Sofor_unqkey UNIQUE (plaka_no),
+	CONSTRAINT Sofor_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT Sofor_f2key FOREIGN KEY (araba_id) REFERENCES "Araba"("araba_id")ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
-CREATE TABLE "Araba"	
-(
-    araba_id SERIAL NOT NULL ,
-    araba_model CHARACTER VARYING(40) NOT NULL
-	araba_tur CHARACTER VARYING(20) NOT NULL,
-    CONSTRAINT araba_pkey PRIMARY KEY (araba_id),
-)
+
 
 
 CREATE TABLE "Admin"	
 (
-    admin_key var NOT NULL ,
-    admin_id SERIAL NOT NULL
+    admin_key CHARACTER VARYING(20) NOT NULL ,
+    admin_id SERIAL NOT NULL,
 	adminname CHARACTER VARYING(20) NOT NULL,
 	create_date DATE NOT NULL,
+	pashhash character varying(512) NOT NULL,
 	last_login DATE NOT NULL,
 	login_status BOOLEAN ,
-	CONSTRAINT Admin_pkey PRIMARY KEY (admin_key),
+	CONSTRAINT Admin_pkey PRIMARY KEY (admin_key)
 )
+
 CREATE TABLE "Password"	
 (
     admin_key var NOT NULL ,
-    admin_id INT NOT NULL
+    admin_id INT NOT NULL,
 	pashhash character varying(512) NOT NULL,
 	pass_salt character varying(80) NOT NULL,
-	CONSTRAINT Pasword_pkey PRIMARY KEY (admin_key),
+	CONSTRAINT Pasword_pkey PRIMARY KEY (admin_key)
 )
+
+
+CREATE FUNCTION public.admin_giris(_username character varying, _password character varying) 
+	RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    if(SELECT count(*) from "Admin" where "adminname"=_username and "pashhash" =_password)> 0 THEN
+        return 1; 
+    else
+        return 0;
+    end if;
+end
+$$;
+
+CREATE FUNCTION public.urun_sil(_urun_id character varying) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    DELETE FROM "urun" WHERE "urun_id" = _urun_id;
+    if found THEN
+        return 1; 
+    else
+        return 0;
+    end if;
+end
+$$;
+
+CREATE FUNCTION public.malzeme_sil(_malzemename character varying) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    DELETE FROM "malzeme" WHERE "malzemename" = _malzemename;
+    if found THEN
+        return 1; 
+    else
+        return 0;
+    end if;
+end
+$$;
+
+CREATE FUNCTION public.eleman_sil(_elemanname character varying) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    DELETE FROM "Elemansc"."Eleman" WHERE "elemanname" = _elemanname;
+    if found THEN
+        return 1; 
+    else
+        return 0;
+    end if;
+end
+$$;
+
+CREATE FUNCTION public.eleman_guncelle(_yenielemanname character varying , _data character varying) 
+	RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	UPDATE "eleman" SET "elemanname" = _yenielemanname WHERE "elemanname"= _data;
+	
+    if found THEN
+        return 1; 
+    else
+        return 0;
+    end if;
+end
+$$;
