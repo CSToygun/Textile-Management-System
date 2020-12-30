@@ -1,0 +1,27 @@
+METİNSEL GÖSTERİM :
+
+urun(  urun_id :SERIAL, urunname:character varying(255), price:integer kategori: character varying(40),malzeme:character varying(255), stok:character varying(40),adet:integer,note:character varying(255) ,tarih:character varying(255),  urunpicture:character varying(255));
+Tarih(tarih_id:SERIAL, tarihdate:character varying(255),malzemetarihi:character varying(255),uruntarihi:character varying(40) );
+Program(data_id:SERIAL NOT NULL ,kisi_id:SERIAL,urun_id:SERIAL,malzeme_id:SERIAL );
+Malzeme(malzeme_id:SERIAL,malzemename:character varying(255),malzemecinsi:character varying(40),miktarcinsi:character varying(40), malzememiktari:INT,tarih:character varying(255),alisfiyat integer  ,note:character varying(255),pictureadress character varying(255));
+Denge(denge_id:SERIAL,alisfiyat_toplam:integer,urunfiyat_toplam:integer,aylikucret_toplam:integer,toplamdenge:integer);
+Eleman( kisi_id:SERIAL,elemanname:character varying(80),elemansurname:character varying(40),telefon BIGINT ,cinsiyet character varying(40),calissaat character varying(255),dogumtarih character varying(85),aylikucret INT ,birim  character varying(55),mesaiucret INT ,adress character varying(255),elemanpicture character varying(255));
+Adress(adress:character varying(150),mahalle:character varying(80),ilce:character varying(40))
+Resimler ( resim_id SERIAL,Resimtur:CHARACTER VARYING(40));
+ElemanResimler ( resim_id:INT,elemanpicture:CHARACTER VARYING(40));
+MalzemeResimler( resim_id: INT,pictureadress: CHARACTER VARYING(40));
+UrunResimler" ( resim_id: INT,urunpicture: CHARACTER VARYING(40) NOT NULL);
+Yonetici(kisi_id:INT NOT NULL , adminkey:SERIAL NOT NULL,);
+Kesim( kisi_id:INT, calismasa:CHARACTER VARYING(40);
+Makine( kisi_id INT:,calismakine:CHARACTER VARYING(40);
+Teknisyen(kisi_id:INT, görevi:CHARACTER VARYING(80));
+Utu( kisi_id INT NOT NULL ,calisacagiutu CHARACTER VARYING(80) NOT NULL );
+Dikis(kisi_id:INT,makineno:CHARACTER VARYING(80));
+Ayakci( kisi_id:INT,yardımetbirim CHARACTER VARYING(80));
+
+Temizlik(  kisi_id:INT NOT NULL ,caliskat:CHARACTER VARYING(80) );
+
+Araba(araba_id SERIAL, araba_model CHARACTER VARYING(40),araba_tur CHARACTER VARYING(20));
+Sofor	(kisi_id: INT,araba_id SERIAL,plaka_no:CHARACTER VARYING(20),);
+Admin(admin_key:CHARACTER VARYING(20),admin_id:SERIAL,adminname:CHARACTER VARYING(20),create_date:DATE,pashhash:character varying(512),last_login:DATE,login_status:BOOLEAN );
+Password( admin_key SERIAL,admin_id INT,pashhash character varying(512) NOT NULL,pass_salt character varying(80))

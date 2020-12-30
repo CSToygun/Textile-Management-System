@@ -99,7 +99,7 @@ namespace DataBase_Work
 
                     if (result == 1)
                     {
-                        MessageBox.Show("Veriniz Silindi ! Lütfen Yenileyiniz ...");
+                        MessageBox.Show("Veriniz Güncellendi! Lütfen Yenileyiniz ...");
                     }
                     else
                     {

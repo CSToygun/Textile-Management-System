@@ -37,8 +37,9 @@ namespace DataBase_Work
             this.kAYITLARToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.sİLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.eXITToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.eXITToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.çIKIŞToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,6 +54,7 @@ namespace DataBase_Work
             this.kAYITLARToolStripMenuItem,
             this.sİLToolStripMenuItem,
             this.toolStripMenuItem2,
+            this.çIKIŞToolStripMenuItem,
             this.eXITToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -112,19 +114,26 @@ namespace DataBase_Work
             this.sİLToolStripMenuItem.Text = "SİL";
             this.sİLToolStripMenuItem.Click += new System.EventHandler(this.sİLToolStripMenuItem_Click);
             // 
-            // eXITToolStripMenuItem
-            // 
-            this.eXITToolStripMenuItem.Name = "eXITToolStripMenuItem";
-            this.eXITToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
-            this.eXITToolStripMenuItem.Text = "EXIT";
-            this.eXITToolStripMenuItem.Click += new System.EventHandler(this.eXITToolStripMenuItem_Click);
-            // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(83, 20);
             this.toolStripMenuItem2.Text = "GUNCELLEME";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            // 
+            // eXITToolStripMenuItem
+            // 
+            this.eXITToolStripMenuItem.Name = "eXITToolStripMenuItem";
+            this.eXITToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.eXITToolStripMenuItem.Text = "KAPAT";
+            this.eXITToolStripMenuItem.Click += new System.EventHandler(this.eXITToolStripMenuItem_Click);
+            // 
+            // çIKIŞToolStripMenuItem
+            // 
+            this.çIKIŞToolStripMenuItem.Name = "çIKIŞToolStripMenuItem";
+            this.çIKIŞToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.çIKIŞToolStripMenuItem.Text = "ÇIKIŞ";
+            this.çIKIŞToolStripMenuItem.Click += new System.EventHandler(this.çIKIŞToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -158,6 +167,7 @@ namespace DataBase_Work
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem sİLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem çIKIŞToolStripMenuItem;
     }
 }
 

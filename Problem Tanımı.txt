@@ -1,0 +1,7 @@
+
+
+PROBLEMİN TANIMI :
+
+Pek çok tekstil fabrikasında görüldü ki , kayıtların çoğunluğu kağıda elle girilip daha sonra bilgisayar ortamına geçiriliyor. Bilgisayarın herhangi bir durumdan bozulması veya diskin zarar görmesinde tüm verilerin kaybolacağı gözlenmiştir.
+Bu programda ki amaç kağıt ardından bilgisayar yerine direkt laptop , tablet , telefon ,vb.. araçlar ile veri tabanına aktarılıp orada saklanması sağlanmıştır. Hem verinin hızlı bir şekilde aktarımı hem de  daha güvenli bir şekilde saklanması sağlanmıştır
+Veri tabanına uzaktan erişimde mevcut ve yedekleme de yapabilmektedir

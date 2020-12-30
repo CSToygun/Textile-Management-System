@@ -94,5 +94,13 @@ namespace DataBase_Work
             update nm = new update();
             nm.Show();
         }
+
+        private void çIKIŞToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            login nm = new login();
+            this.Close();
+            this.Hide();
+            nm.Show();
+        }
     }
 }
