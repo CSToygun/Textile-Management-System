@@ -13,7 +13,7 @@ CREATE TABLE public.urun
     CONSTRAINT urun_pkey PRIMARY KEY (urun_id) ,
 	CONSTRAINT urun2_fkey FOREIGN KEY (malzeme) REFERENCES "Malzeme"("malzemename") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT urun3_fkey FOREIGN KEY (tarih) REFERENCES "Malzeme"("uruntarihi") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT urun4_fkey FOREIGN KEY (urunpicture) REFERENCES "UrunResimler"("urunpicture") ON DELETE CASCADE  ON UPDATE CASCADE
+	CONSTRAINT urun4_fkey FOREIGN KEY (urunpicture) REFERENCES "Resimlersc"."UrunResimler"("urunpicture") ON DELETE CASCADE  ON UPDATE CASCADE
 )
 
 TABLESPACE pg_default;
@@ -38,7 +38,7 @@ CREATE TABLE public.Program
     urun_id character varying(255) NOT NULL,
     malzeme_id character varying(40) COLLATE  NOT NULL,
 	CONSTRAINT program_pkey PRIMARY KEY (data_id),
-	CONSTRAINT program_fkey FOREIGN KEY (kisi_id ) REFERENCES "Eleman"("kisi_id") ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT program_fkey FOREIGN KEY (kisi_id ) REFERENCES "Elemansc"."Eleman"("kisi_id") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT program2_fkey FOREIGN KEY (urun_id) REFERENCES "Urun"("urun_id") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT program3_fkey FOREIGN KEY (malzeme_id) REFERENCES "Malzeme"("malzeme_id") ON DELETE CASCADE ON UPDATE CASCADE
 )
@@ -58,11 +58,26 @@ CREATE TABLE public.Malzeme
 	pictureadress character varying(255),
     CONSTRAINT malzeme_pkey PRIMARY KEY (malzeme_id)
 	CONSTRAINT malzeme_fkey FOREIGN KEY (tarih) REFERENCES "Malzeme"("malzemetarihi") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT malzeme2_fkey FOREIGN KEY (pictureadress) REFERENCES "MalzemeResimler"("pictureadress")ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT malzeme2_fkey FOREIGN KEY (pictureadress) REFERENCES "Resimlersc"."MalzemeResimler"("pictureadress")ON DELETE CASCADE ON UPDATE CASCADE
 	CONSTRAINT "malzemeCheck" CHECK("malzememiktari" >= 0)
 )
 
-CREATE TABLE public.Eleman
+CREATE TABLE public.Denge
+(
+	denge_id SERIAL NOT NULL ,
+	alisfiyat_toplam integer NOT NULL,
+    urunfiyat_toplam integer NOT NULL,
+	aylikucret_toplam integer NOT NULL,
+	toplamdenge integer NOT NULL,
+	CONSTRAINT denge_pkey PRIMARY KEY (denge_id),
+	CONSTRAINT denge_fkey FOREIGN KEY (alisfiyat_toplam) REFERENCES "Malzeme"("alisfiyat")ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT denge_f2key FOREIGN KEY (aylikucret_toplam) REFERENCES "Elemansc"."Eleman"("aylikucret")ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT denge_f2key FOREIGN KEY (urunfiyat_toplam) REFERENCES "urun"("price")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE SCHEMA "Elemansc";
+
+CREATE TABLE "Elemansc"."Eleman"
 (
     kisi_id SERIAL NOT NULL ,
     elemanname character varying(80) NOT NULL,
@@ -78,8 +93,8 @@ CREATE TABLE public.Eleman
 	elemanpicture character varying(255) NOT NULL,
     CONSTRAINT Eleman_pkey PRIMARY KEY (kisi_id),
 	CONSTRAINT Eleman_fkey FOREIGN KEY (adress) REFERENCES "Adress"("adress")ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT "telefon_unqkey" UNIQUE (telefon);
-	
+	CONSTRAINT Eleman_f2key FOREIGN KEY (elemanpicture) REFERENCES "Resimlersc"."ElemanResimler"("elemanpicture")ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT "telefon_unqkey" UNIQUE (telefon)
 )
 
 CREATE TABLE public.Adress
@@ -90,132 +105,138 @@ CREATE TABLE public.Adress
 	CONSTRAINT adress_pkey PRIMARY KEY (adress)
 )
 
-CREATE TABLE public.Denge
+CREATE SCHEMA "Resimlersc";
+
+CREATE TABLE "Resimlersc"."Resimler" ( 
+	"resim_id" SERIAL,
+	"resimtur" CHARACTER VARYING(40) NOT NULL,
+	CONSTRAINT "resimlerlPK" PRIMARY KEY ("resim_id")
+);
+
+CREATE TABLE "Resimlersc"."ElemanResimler" ( 
+	"resim_id" INT,
+	"elemanpicture" CHARACTER VARYING(40) NOT NULL,
+	CONSTRAINT "ElemanResimlerPK" PRIMARY KEY ("resim_id") ,
+	CONSTRAINT Elemanpic_fkey FOREIGN KEY (resim_id) REFERENCES "Resimlersc"."Resimler"("resim_id")ON DELETE CASCADE ON UPDATE CASCADE,
+);
+
+CREATE TABLE "Resimlersc"."MalzemeResimler" ( 
+	"resim_id" INT,
+	"pictureadress" CHARACTER VARYING(40) NOT NULL,
+	CONSTRAINT "MalzemeResimlerPK" PRIMARY KEY ("resim_id"), 
+	CONSTRAINT malzemepic_fkey FOREIGN KEY (resim_id) REFERENCES "Resimlersc"."Resimler"("resim_id")ON DELETE CASCADE ON UPDATE CASCADE,
+);
+
+CREATE TABLE "Resimlersc"."UrunResimler" ( 
+	"resim_id" INT,
+	"urunpicture" CHARACTER VARYING(40) NOT NULL,
+	CONSTRAINT "UrunResimlerPK" PRIMARY KEY ("resim_id"),
+	CONSTRAINT urunpic_fkey FOREIGN KEY (resim_id) REFERENCES "Resimlersc"."Resimler"("resim_id")ON DELETE CASCADE ON UPDATE CASCADE,
+);
+
+--------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+
+CREATE TABLE "Elemansc"."Yonetici"	
 (
-	denge_id SERIAL NOT NULL ,
-	alisfiyat_toplam character varying(150) NOT NULL,
-    urunfiyat_toplam character varying(80) NOT NULL,
-	toplamdenge character varying(40) NOT NULL,
-	CONSTRAINT denge_pkey PRIMARY KEY (denge_id)
+    kisi_id INT NOT NULL ,
+    adminkey SERIAL NOT NULL,
+    CONSTRAINT Yonetici_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Yonetici_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT Yonetici_f2key FOREIGN KEY (adminkey) REFERENCES "Admin"("admin_key")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE "Elemansc"."Kesim"	
+(
+    kisi_id INT NOT NULL ,
+    calismasa CHARACTER VARYING(40) NOT NULL,
+    CONSTRAINT Kesim_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Kesim_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE,
+)
+CREATE TABLE "Elemansc"."Makine"	
+(
+    kisi_id INT NOT NULL ,
+    calismakine CHARACTER VARYING(40) NOT NULL,
+    CONSTRAINT  Makine_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Makine_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+	
+)
+CREATE TABLE "Elemansc"."Teknisyen"	
+(
+    kisi_id INT NOT NULL ,
+    gorevi CHARACTER VARYING(80) NOT NULL,
+    CONSTRAINT Teknisyen_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Teknisyen_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE "Elemansc"."Utu"	
+(
+    kisi_id INT NOT NULL ,
+    calisacagiutu CHARACTER VARYING(80) NOT NULL,
+    CONSTRAINT Utu_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Utu_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE "Elemansc"."Dikis"	
+(
+    kisi_id INT NOT NULL ,
+    makineno CHARACTER VARYING(80) NOT NULL,
+    CONSTRAINT Dikis_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Dikis_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE "Elemansc"."Ayakci"	
+(
+    kisi_id INT NOT NULL ,
+    yardımetbirim CHARACTER VARYING(80) NOT NULL,
+    CONSTRAINT Ayakci_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Ayakci_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE "Elemansc"."Temizlik"	
+(
+    kisi_id INT NOT NULL ,
+    caliskat CHARACTER VARYING(80) NOT NULL,
+    CONSTRAINT Yonetici_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Teknisyen_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE "Elemansc"."Sofor"	
+(
+    kisi_id INT NOT NULL ,
+    araba_id SERIAL NOT NULL,
+	plaka_no CHARACTER VARYING(20) NOT NULL,
+    CONSTRAINT Sofor_pkey PRIMARY KEY (kisi_id),
+	CONSTRAINT Sofor_unqkey UNIQUE KEY (plaka_no),
+	CONSTRAINT Sofor_fkey FOREIGN KEY (kisi_id) REFERENCES "Elemansc"."Eleman"("kisi_id")ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT Sofor_f2key FOREIGN KEY (araba_id) REFERENCES "Araba"("araba_id")ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE "Araba"	
+(
+    araba_id SERIAL NOT NULL ,
+    araba_model CHARACTER VARYING(40) NOT NULL
+	araba_tur CHARACTER VARYING(20) NOT NULL,
+    CONSTRAINT araba_pkey PRIMARY KEY (araba_id),
 )
 
 
-
-
-
-
-
-
-
-
-
-
-
-IF OBJECT_ID('dbo.user_main') is null
-BEGIN
-	-- master user table
-	CREATE TABLE user_main (
-			[user_key] int, -- IDENTITY(1,1) REMOVED handling with proc (spgetNextUserKey)
-			[user_id] varchar(50) not null,
-			[first_name] varchar(15) not null,
-			[last_name] varchar(20) not null,
-			[create_date] datetime not null,
-		PRIMARY KEY NONCLUSTERED 
-		(
-			[user_key] ASC
-		) ON [PRIMARY]
-	)
-
-		ALTER TABLE user_main
-			ADD CONSTRAINT def_createDate DEFAULT (GETDATE()) FOR [create_date]
-END
-
-
-IF OBJECT_ID('dbo.pass_main') is null
-BEGIN
-	-- master user / pass table
-	CREATE TABLE pass_main (
-			[user_key] int, 
-			[pass_hash] varchar(max) not null, -- hashed in C# app
-			[pass_salt] varchar(max) not null, -- HASHBYTES()
-			CONSTRAINT fk_userPass FOREIGN KEY (user_key) REFERENCES user_main(user_key)
-	)
-
-		CREATE UNIQUE NONCLUSTERED INDEX natKey_passMain ON pass_main (
-			[user_key]
-		)
-
-END
-
-GO
-
-
-/* --- AUDIT TABLES --- */
-
-IF OBJECT_ID('dbo.login_audit') is null
-BEGIN
-	-- login auditing
-	CREATE TABLE login_audit (
-			[user_key] int not null,
-			[login_status] int not null, -- 1 success / 0 fail
-			[curr_session_id] varchar(max) not null, -- gen'd using NEWID() with proc (spcreateSession)
-			[last_login] datetime not null,
-		CONSTRAINT fk_loginAudit FOREIGN KEY (user_key) REFERENCES user_main(user_key)
-	)
-
-		CREATE UNIQUE NONCLUSTERED INDEX natKey_loginAudit ON login_audit (
-			[user_key]
-		)
-
-		ALTER TABLE login_audit
-			ADD CONSTRAINT def_lastLoginDate DEFAULT (GETDATE()) FOR [last_login]
-
-		ALTER TABLE login_audit
-			ADD CONSTRAINT def_loginStatus DEFAULT (0) FOR [login_status]
-END
-
-GO
-
-IF OBJECT_ID('dbo.logout_audit') is null
-BEGIN
-	-- logout auditing
-	CREATE TABLE logout_audit (
-			[user_key] int not null,
-			[logout_status] int not null, -- 1 success / 0 fail
-			[last_logout] datetime not null,
-			[last_session_id] varchar(max) not null,
-		CONSTRAINT fk_logoutAudit FOREIGN KEY (user_key) REFERENCES user_main(user_key)
-	)
-
-		CREATE UNIQUE NONCLUSTERED INDEX natKey_loutAudit ON logout_audit (
-			[user_key]
-		)
-
-		ALTER TABLE logout_audit
-			ADD CONSTRAINT def_lastLogoutDate DEFAULT (GETDATE()) FOR [last_logout]
-
-		ALTER TABLE logout_audit
-			ADD CONSTRAINT def_logoutStatus DEFAULT (0) FOR [logout_status]
-END
-
-GO
-
-/* KEY TABLES (opting out of using IDENTITY() on user_main PK) */
-
-IF OBJECT_ID('dbo.user_key_store') is null
-BEGIN
-	-- user key value store
-	CREATE TABLE user_key_store (
-			[user_key] int not null,
-		PRIMARY KEY NONCLUSTERED 
-		(
-			[user_key] ASC
-		) ON [PRIMARY]
-	)
-
-	ALTER TABLE user_key_store
-		ADD CONSTRAINT def_userKey DEFAULT (0) FOR [user_key]
-
-END
-
-GO
+CREATE TABLE "Admin"	
+(
+    admin_key var NOT NULL ,
+    admin_id SERIAL NOT NULL
+	adminname CHARACTER VARYING(20) NOT NULL,
+	create_date DATE NOT NULL,
+	last_login DATE NOT NULL,
+	login_status BOOLEAN ,
+	CONSTRAINT Admin_pkey PRIMARY KEY (admin_key),
+)
+CREATE TABLE "Password"	
+(
+    admin_key var NOT NULL ,
+    admin_id INT NOT NULL
+	pashhash character varying(512) NOT NULL,
+	pass_salt character varying(80) NOT NULL,
+	CONSTRAINT Pasword_pkey PRIMARY KEY (admin_key),
+)
