@@ -1,0 +1,48 @@
+
+Her admin kullanıcısı 1 passworda sahiptir.
+
+Her adminin son aktiflik ve şuan ki durumu mevcuttur
+
+Her password hash özelliği ile tutulur.
+
+Her yöneticinin 1 admin hesabı mevcuttur.
+
+her ürünün adı , ücreti , stokta bukunup bulunmadığı , yapımında kullanıldığı malzemeler , vb. bilgileri mevcuttur.
+
+Her malzemenin adı , cinsi , miktarı , alış fiyatı , vb. bilgileri mevcuttur.
+
+Her elemanın adı , soyadı , telefonu , cinsiyeti , doğum tarihi , çalışacağı birim vb. bilgileri istenir.
+
+Her Ürünün mutlaka 1 ücreti vardır.
+
+Her ürünün mutlaka stok durumu mevcuttur.
+
+1 ürün 1den fazla malzemeden oluşabilir.
+
+1 malzeme pek çok üründe kullanılabilir.
+
+1 telefon max 2 kişi tarafından kullanılabilir.
+
+1 eleman sadece 1 birimde çalışabilir.
+
+1 birimde birden çok eleman çalışabilir.
+
+1 birim ütücü , dikişçi , şef , kesim , teknisyen vb. türlerden oluşur.
+
+1 personelin resmi sadece 1 personele ait olur.
+
+1 ürünün resmi sadece 1 ürüne ait olur.
+
+1 malzeme resmi sadece 1 malzemeyea it olur.
+
+1 adres birden çok personele ait olabilir.
+
+1 personel sadece 1 adrese kayıt olabilir.
+
+Her personelin mutlaka aylık ücreti vardır.
+
+Her ürünün kayıt tarihi mevcuttur.
+
+her malzemenin kayıt tarihi mevcuttur.
+
+Her resim dosya yolu olarak veri tabanında tutulur

@@ -1,0 +1,159 @@
+CREATE TABLE public.urun
+(
+    id integer NOT NULL DEFAULT nextval('urun_id_seq'::regclass),
+    urunname character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    price integer NOT NULL,
+    kategori character varying(40) COLLATE pg_catalog."default" NOT NULL,
+    malzeme character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    stok character varying(40) COLLATE pg_catalog."default" NOT NULL,
+    adet integer NOT NULL,
+    note character varying(255) COLLATE pg_catalog."default",
+    tarih character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT urun_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.urun
+    OWNER to postgres;
+
+
+CREATE TABLE public.Malzeme
+(
+    id integer NOT NULL DEFAULT nextval('urun_id_seq'::regclass) ,
+    malzemename character varying(255) NOT NULL,
+    malzemecinsi character varying(40) NOT NULL,
+	miktarcinsi character varying(40) NOT NULL,
+    malzememiktari INT NOT NULL,
+	tarih character varying(255) NOT NULL,
+    alisfiyat integer  NOT NULL,
+    note character varying(255),
+	pictureadress character varying(255),
+    CONSTRAINT malzeme_pkey PRIMARY KEY (id)
+)
+
+CREATE TABLE public.Eleman
+(
+    id integer NOT NULL DEFAULT nextval('urun_id_seq'::regclass) ,
+    elemanname character varying(80) NOT NULL,
+    elemansurname character varying(40) NOT NULL,
+	telefon BIGINT ,
+	cinsiyet character varying(40) NOT NULL,
+	calissaat character varying(255) NOT NULL,
+    dogumtarih character varying(85) NOT NULL,
+    aylikucret INT ,
+	birim  character varying(55) NOT NULL,
+	mesaiucret INT ,
+    adress character varying(255) NOT NULL,
+	elemanpicture character varying(255) NOT NULL,
+    CONSTRAINT Eleman_pkey PRIMARY KEY (id)
+)
+
+IF OBJECT_ID('dbo.user_main') is null
+BEGIN
+	-- master user table
+	CREATE TABLE user_main (
+			[user_key] int, -- IDENTITY(1,1) REMOVED handling with proc (spgetNextUserKey)
+			[user_id] varchar(50) not null,
+			[first_name] varchar(15) not null,
+			[last_name] varchar(20) not null,
+			[create_date] datetime not null,
+		PRIMARY KEY NONCLUSTERED 
+		(
+			[user_key] ASC
+		) ON [PRIMARY]
+	)
+
+		ALTER TABLE user_main
+			ADD CONSTRAINT def_createDate DEFAULT (GETDATE()) FOR [create_date]
+END
+
+
+IF OBJECT_ID('dbo.pass_main') is null
+BEGIN
+	-- master user / pass table
+	CREATE TABLE pass_main (
+			[user_key] int, 
+			[pass_hash] varchar(max) not null, -- hashed in C# app
+			[pass_salt] varchar(max) not null, -- HASHBYTES()
+			CONSTRAINT fk_userPass FOREIGN KEY (user_key) REFERENCES user_main(user_key)
+	)
+
+		CREATE UNIQUE NONCLUSTERED INDEX natKey_passMain ON pass_main (
+			[user_key]
+		)
+
+END
+
+GO
+
+
+/* --- AUDIT TABLES --- */
+
+IF OBJECT_ID('dbo.login_audit') is null
+BEGIN
+	-- login auditing
+	CREATE TABLE login_audit (
+			[user_key] int not null,
+			[login_status] int not null, -- 1 success / 0 fail
+			[curr_session_id] varchar(max) not null, -- gen'd using NEWID() with proc (spcreateSession)
+			[last_login] datetime not null,
+		CONSTRAINT fk_loginAudit FOREIGN KEY (user_key) REFERENCES user_main(user_key)
+	)
+
+		CREATE UNIQUE NONCLUSTERED INDEX natKey_loginAudit ON login_audit (
+			[user_key]
+		)
+
+		ALTER TABLE login_audit
+			ADD CONSTRAINT def_lastLoginDate DEFAULT (GETDATE()) FOR [last_login]
+
+		ALTER TABLE login_audit
+			ADD CONSTRAINT def_loginStatus DEFAULT (0) FOR [login_status]
+END
+
+GO
+
+IF OBJECT_ID('dbo.logout_audit') is null
+BEGIN
+	-- logout auditing
+	CREATE TABLE logout_audit (
+			[user_key] int not null,
+			[logout_status] int not null, -- 1 success / 0 fail
+			[last_logout] datetime not null,
+			[last_session_id] varchar(max) not null,
+		CONSTRAINT fk_logoutAudit FOREIGN KEY (user_key) REFERENCES user_main(user_key)
+	)
+
+		CREATE UNIQUE NONCLUSTERED INDEX natKey_loutAudit ON logout_audit (
+			[user_key]
+		)
+
+		ALTER TABLE logout_audit
+			ADD CONSTRAINT def_lastLogoutDate DEFAULT (GETDATE()) FOR [last_logout]
+
+		ALTER TABLE logout_audit
+			ADD CONSTRAINT def_logoutStatus DEFAULT (0) FOR [logout_status]
+END
+
+GO
+
+/* KEY TABLES (opting out of using IDENTITY() on user_main PK) */
+
+IF OBJECT_ID('dbo.user_key_store') is null
+BEGIN
+	-- user key value store
+	CREATE TABLE user_key_store (
+			[user_key] int not null,
+		PRIMARY KEY NONCLUSTERED 
+		(
+			[user_key] ASC
+		) ON [PRIMARY]
+	)
+
+	ALTER TABLE user_key_store
+		ADD CONSTRAINT def_userKey DEFAULT (0) FOR [user_key]
+
+END
+
+GO
