@@ -238,8 +238,6 @@ namespace DataBase_Work
             {
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = "SELECT * FROM eleman";
-                dataGridView1.Rows.Clear();
-                dataGridView1.Refresh();
                 NpgsqlDataReader dr = cmd.ExecuteReader();
                 if (dr.HasRows)
                 {

@@ -30,6 +30,7 @@ CREATE TABLE public.Tarih
 	CONSTRAINT tarih_pkey PRIMARY KEY (tarih_id)
 )
 
+--------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE public.Program
 (
@@ -42,13 +43,13 @@ CREATE TABLE public.Program
 	CONSTRAINT program2_fkey FOREIGN KEY (urun_id) REFERENCES "Urun"("urun_id") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT program3_fkey FOREIGN KEY (malzeme_id) REFERENCES "Malzeme"("malzeme_id") ON DELETE CASCADE ON UPDATE CASCADE
 )
-
+--------------------------------------------------------------------------------------------------------------------------
 
 
 CREATE TABLE public.Malzeme
 (
     malzeme_id SERIAL NOT NULL ,
-    malzemename character varying(255) NOT NULL,
+		character varying(255) NOT NULL,
     malzemecinsi character varying(40) NOT NULL,
 	miktarcinsi character varying(40) NOT NULL,
     malzememiktari INT NOT NULL,
@@ -62,6 +63,8 @@ CREATE TABLE public.Malzeme
 	CONSTRAINT "malzemeCheck" CHECK("malzememiktari" >= 0)
 )
 
+--------------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE public.Denge
 (
 	denge_id SERIAL NOT NULL ,
@@ -74,6 +77,8 @@ CREATE TABLE public.Denge
 	CONSTRAINT denge_f2key FOREIGN KEY (aylikucret_toplam) REFERENCES "Elemansc"."Eleman"("aylikucret")ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT denge_f2key FOREIGN KEY (urunfiyat_toplam) REFERENCES "urun"("price")ON DELETE CASCADE ON UPDATE CASCADE
 )
+
+--------------------------------------------------------------------------------------------------------------------------
 
 CREATE SCHEMA "Elemansc";
 
@@ -97,6 +102,9 @@ CREATE TABLE "Elemansc"."Eleman"
 	CONSTRAINT "telefon_unqkey" UNIQUE (telefon)
 )
 
+
+--------------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE public.Adress
 ( 
     adress character varying(150) NOT NULL,
@@ -104,6 +112,8 @@ CREATE TABLE public.Adress
 	ilce character varying(40) NOT NULL,
 	CONSTRAINT adress_pkey PRIMARY KEY (adress)
 )
+
+--------------------------------------------------------------------------------------------------------------------------
 
 CREATE SCHEMA "Resimlersc";
 
@@ -221,7 +231,7 @@ CREATE TABLE "Elemansc"."Sofor"
 	CONSTRAINT Sofor_f2key FOREIGN KEY (araba_id) REFERENCES "Araba"("araba_id")ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
+--------------------------------------------------------------------------------------------------------------------------
 
 
 CREATE TABLE "Admin"	
@@ -245,6 +255,9 @@ CREATE TABLE "Password"
 	CONSTRAINT Pasword_pkey PRIMARY KEY (admin_key)
 )
 
+--------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------Saklı yordam/Fonksiyonlar-------------------------------
 
 CREATE FUNCTION public.admin_giris(_username character varying, _password character varying) 
 	RETURNS integer
@@ -312,3 +325,71 @@ BEGIN
     end if;
 end
 $$;
+
+----------------------------------Tetikleiciler(TRIGGER)-------------------------------
+
+
+CREATE TRIGGER "ElemanozellikDegistiginde"
+BEFORE UPDATE ON "eleman"
+FOR EACH ROW
+EXECUTE PROCEDURE "eleman_guncelle"(_yenielemanname,_data);
+
+CREATE TRIGGER "urunsilindiginde"
+BEFORE UPDATE ON "urun"
+FOR EACH ROW
+EXECUTE PROCEDURE "urun_sil"(_urun_id);
+
+ALTER TABLE "urun"
+ENABLE TRIGGER ALL;
+
+ALTER TABLE "malzeme"
+ENABLE TRIGGER ALL;
+
+ALTER TABLE "Elemansc"."Eleman"
+ENABLE TRIGGER ALL;
+
+CREATE TRIGGER "kayitKontrol"
+BEFORE INSERT OR UPDATE ON "urun"  
+FOR EACH ROW
+EXECUTE PROCEDURE "urunEkle1"();
+
+CREATE TRIGGER "SiltKontrol"
+AFTER DELETE "urun"  
+FOR EACH ROW
+EXECUTE PROCEDURE "tabloduzenle1"();
+
+----------------------------------Değer Verilmeleri-------------------------------
+
+
+INSERT INTO "urun" 
+("urunname", "price", "kategori", "malzeme", "stok","adet","note","tarih","urunpicture")
+VALUES
+('ELO001', 1300,'Ev','yün','5',5,'nadipudrun','2019-10-30', 'asd.png');
+
+INSERT INTO "urun" 
+("urunname", "price", "kategori", "malzeme", "stok","adet","note","tarih","urunpicture")
+VALUES
+('sweat', 1300,'giyim','yün','5',8,'nadipudrun','2019-10-30', 'asd.png');
+
+INSERT INTO "urun" 
+("urunname", "price", "kategori", "malzeme", "stok","adet","note","tarih","urunpicture")
+VALUES
+('Maske', 1300,'aksesuar','boya','5',25,'nadipudrun','2019-10-30', 'asd.png');
+
+INSERT INTO "urun" 
+("urunname", "price", "kategori", "malzeme", "stok","adet","note","tarih","urunpicture")
+VALUES
+('Kapşon', 1300,'iş','yiplik','5',50,'nadipudrun','2019-10-30', 'asd.png');
+
+INSERT INTO "Malzeme" 
+("urunname", "price", "kategori", "malzeme", "stok","adet","note","tarih","urunpicture")
+VALUES
+('Kapşon', 1300,'iş','yiplik','5',50,'nadipudrun','2019-10-30', 'asd.png');
+
+INSERT INTO "Admin" ("admin_key", "adminname","create_date", "pashhash", "last_login")
+VALUES ('QweQ11', 'admin', '27/03/2020', 'admin','27/06/2020');
+
+Geriye kalan tüm değerler zaten uygulama üzerinden gönderilmektedir.
+
+
+
